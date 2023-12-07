@@ -21,14 +21,17 @@ jobs:
         with:
           java-version: '17'
 
+      - name: Clean with Maven
+        run: ./mvnw clean
+
       - name: Build with Maven
-        run: mvn clean install
+        run: ./mvnw build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}/out/artifacts/demo_jar/demo/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
