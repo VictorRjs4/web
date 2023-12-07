@@ -19,6 +19,7 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
+          distribution: 'adopt'
           java-version: '17'
 
       - name: Clean with Maven
@@ -28,7 +29,7 @@ jobs:
         run: ./mvnw build
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: java-app
           path: '${{ github.workspace }}/out/artifacts/demo_jar/demo.jar'
