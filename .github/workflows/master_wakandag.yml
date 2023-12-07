@@ -23,10 +23,10 @@ jobs:
           java-version: '17'
 
       - name: Clean with Maven
-        run: ./mvn clean
+        run: ./mvnw  clean
 
       - name: Build with Maven
-        run: ./mvn build
+        run: ./mvnw build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
