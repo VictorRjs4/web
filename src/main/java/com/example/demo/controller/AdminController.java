@@ -48,34 +48,34 @@ public class AdminController {
                 .addObject("juego", new Juego())
                 .addObject("categorias",categorias);
     }
-    @PostMapping("/juegos/nuevo")
-        public ModelAndView registrarJuego(@Validated Juego juego,BindingResult bindingResult ) {
-        if (bindingResult.hasErrors() || juego.getImage().isEmpty() || juego.getInstaller().isEmpty())
-        {
-            if(juego.getImage().isEmpty()) {
-                bindingResult.rejectValue("image","MultipartNotEmpty");
-            }
-            if(juego.getInstaller().isEmpty()) {
-                bindingResult.rejectValue("installer","MultipartNotEmpty");
-            }
+        @PostMapping("/juegos/nuevo")
+            public ModelAndView registrarJuego(@Validated Juego juego,BindingResult bindingResult ) {
+            if (bindingResult.hasErrors() || juego.getImage().isEmpty() || juego.getInstaller().isEmpty())
+            {
+                if(juego.getImage().isEmpty()) {
+                    bindingResult.rejectValue("image","MultipartNotEmpty");
+                }
+                if(juego.getInstaller().isEmpty()) {
+                    bindingResult.rejectValue("installer","MultipartNotEmpty");
+                }
 
-                // Manejo de errores, en este caso, volvemos a cargar la vista del formulario
-            // para mostrar los errores al usuario.
-            List<Categoria> categorias = categoriaRepository.findAll(Sort.by("titulo"));
-            return new ModelAndView("admin/nueva-juego")
-                    .addObject("juego",juego)
-                    .addObject("categorias",categorias);
+                    // Manejo de errores, en este caso, volvemos a cargar la vista del formulario
+                // para mostrar los errores al usuario.
+                List<Categoria> categorias = categoriaRepository.findAll(Sort.by("titulo"));
+                return new ModelAndView("admin/nueva-juego")
+                        .addObject("juego",juego)
+                        .addObject("categorias",categorias);
+            }
+            String imagen = servicio.almacenarArchivo(juego.getImage());
+            juego.setImagen(imagen);
+            String instalador = servicio.almacenarArchivo(juego.getInstaller());
+            juego.setInstalador(instalador);
+
+            // Guardar el juego en la base de datos
+            juegoRepository.save(juego);
+
+            return new ModelAndView("redirect:/admin");
         }
-        String imagen = servicio.almacenarArchivo(juego.getImage());
-        juego.setImagen(imagen);
-        String instalador = servicio.almacenarArchivo(juego.getInstaller());
-        juego.setInstalador(instalador);
-
-        // Guardar el juego en la base de datos
-        juegoRepository.save(juego);
-
-        return new ModelAndView("redirect:/admin");
-    }
     @GetMapping("/juegos/{id}/editar")
     public ModelAndView mostrarFormularioDeEditarJuego(@PathVariable Long id) {
         Juego juego = juegoRepository.getOne(id);
